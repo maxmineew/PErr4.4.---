@@ -15,6 +15,15 @@ source .venv/bin/activate
 pip install -r requirements-server.txt
 ```
 
+Проверка интерпретатора (если systemd даёт **203/EXEC**, без этого не запустится):
+
+```bash
+/root/PErr4.4.---/.venv/bin/python -V
+/root/PErr4.4.---/.venv/bin/python -c "import gunicorn; print('ok')"
+```
+
+Если первая команда выдаёт «No such file» — удалите `.venv` и заново выполните `python3.12 -m venv .venv` и `pip install` (окружение с Windows на Linux не переносить).
+
 ## 2. Переменные окружения
 
 Создайте `bot/.env` (файл в `.gitignore`; реальные ключи не вносите в репозиторий и не копируйте в тикеты/чаты):
@@ -38,7 +47,7 @@ YANDEX_DISK_FILE_PATH_WEB=/Заявки/website_applications.xlsx
 cd /root/PErr4.4.---
 source .venv/bin/activate
 python bot/bot.py          # Ctrl+C после проверки
-cd web && gunicorn -w 1 -b 127.0.0.1:5000 "app:app"   # Ctrl+C
+cd web && python -m gunicorn -w 1 -b 127.0.0.1:5000 app:app   # Ctrl+C
 ```
 
 ## 4. systemd: бот и веб как сервисы
