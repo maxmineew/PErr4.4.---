@@ -3,7 +3,7 @@
 
 from flask import Flask
 
-app = Flask(__name__, static_folder="../static", template_folder="../templates")
+app = Flask(__name__, static_folder=None, template_folder="../templates")
 
 from app import config
 app.config["SECRET_KEY"] = config.SECRET_KEY

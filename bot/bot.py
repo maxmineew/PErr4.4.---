@@ -13,21 +13,37 @@ from ai_logic import UserState, process_user_message
 from config import TELEGRAM_BOT_TOKEN
 from sheets import try_sync_backup
 
-# Настройка логирования — консоль и файл (для отладки ошибок)
+# Логирование: консоль (INFO) + bot.log (все INFO+) + bot_errors.log (только ERROR)
+from logging.handlers import RotatingFileHandler
 from pathlib import Path
+
 _log_dir = Path(__file__).resolve().parent.parent
-_log_file = _log_dir / "bot_errors.log"
 _fmt = "%(asctime)s [%(levelname)s] %(name)s: %(message)s"
 logging.basicConfig(
     level=logging.INFO,
     format=_fmt,
     datefmt="%Y-%m-%d %H:%M:%S",
 )
-# Дополнительно пишем ошибки в файл
-_file_h = logging.FileHandler(_log_file, encoding="utf-8")
-_file_h.setLevel(logging.ERROR)
-_file_h.setFormatter(logging.Formatter(_fmt, datefmt="%Y-%m-%d %H:%M:%S"))
-logging.getLogger().addHandler(_file_h)
+_root = logging.getLogger()
+
+# Полный журнал (в т.ч. ответы API YandexGPT при ошибках)
+_log_all = _log_dir / "bot.log"
+_file_info = RotatingFileHandler(
+    _log_all, maxBytes=5 * 1024 * 1024, backupCount=3, encoding="utf-8"
+)
+_file_info.setLevel(logging.INFO)
+_file_info.setFormatter(logging.Formatter(_fmt, datefmt="%Y-%m-%d %H:%M:%S"))
+_root.addHandler(_file_info)
+
+# Только ошибки — отдельный файл для быстрого поиска
+_log_err = _log_dir / "bot_errors.log"
+_file_err = RotatingFileHandler(
+    _log_err, maxBytes=2 * 1024 * 1024, backupCount=2, encoding="utf-8"
+)
+_file_err.setLevel(logging.ERROR)
+_file_err.setFormatter(logging.Formatter(_fmt, datefmt="%Y-%m-%d %H:%M:%S"))
+_root.addHandler(_file_err)
+
 logger = logging.getLogger(__name__)
 
 bot = telebot.TeleBot(TELEGRAM_BOT_TOKEN)

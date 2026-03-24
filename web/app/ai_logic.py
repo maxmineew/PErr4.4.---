@@ -78,6 +78,12 @@ def _call_gpt(messages: list[dict]) -> str:
             headers={"Content-Type": "application/json", "Authorization": f"Api-Key {YANDEX_API_KEY}"},
             timeout=30,
         )
+        if not r.ok:
+            logger.error(
+                "YandexGPT HTTP %s: %s",
+                r.status_code,
+                (r.text or "")[:4000],
+            )
         r.raise_for_status()
         return r.json().get("result", {}).get("alternatives", [{}])[0].get("message", {}).get("text", "")
     except Exception as e:

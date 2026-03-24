@@ -123,6 +123,15 @@ def call_yandexgpt(messages: list[dict]) -> str:
     }
     try:
         response = requests.post(YANDEXGPT_URL, json=payload, headers=headers, timeout=30)
+        if not response.ok:
+            body = (response.text or "")[:4000]
+            logger.error(
+                "YandexGPT HTTP %s modelUri=gpt://%s/%s тело ответа: %s",
+                response.status_code,
+                YANDEX_FOLDER_ID,
+                YANDEXGPT_MODEL,
+                body,
+            )
         response.raise_for_status()
         data = response.json()
         return data.get("result", {}).get("alternatives", [{}])[0].get("message", {}).get("text", "")

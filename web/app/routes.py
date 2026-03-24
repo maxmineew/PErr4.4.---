@@ -4,7 +4,7 @@
 import secrets
 from collections import defaultdict
 
-from flask import jsonify, render_template, request, send_from_directory
+from flask import jsonify, render_template, request
 
 from app.ai_logic import process
 
