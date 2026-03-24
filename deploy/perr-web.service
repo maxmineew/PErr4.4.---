@@ -8,7 +8,7 @@ Type=simple
 User=root
 WorkingDirectory=/root/PErr4.4.---/web
 EnvironmentFile=-/root/PErr4.4.---/bot/.env
-ExecStart=/root/PErr4.4.---/venv/bin/gunicorn -w 2 -b 127.0.0.1:5000 "app:app"
+ExecStart=/root/PErr4.4.---/.venv/bin/gunicorn -w 2 -b 127.0.0.1:5000 "app:app"
 Restart=always
 RestartSec=5
 

@@ -8,7 +8,7 @@ Type=simple
 User=root
 WorkingDirectory=/root/PErr4.4.---
 EnvironmentFile=-/root/PErr4.4.---/bot/.env
-ExecStart=/root/PErr4.4.---/venv/bin/python /root/PErr4.4.---/bot/bot.py
+ExecStart=/root/PErr4.4.---/.venv/bin/python /root/PErr4.4.---/bot/bot.py
 Restart=always
 RestartSec=10
 

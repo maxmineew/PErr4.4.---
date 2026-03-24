@@ -10,8 +10,8 @@ apt install -y git python3.12-venv python3-pip nginx
 cd /root
 git clone https://github.com/maxmineew/PErr4.4.---.git
 cd PErr4.4.---
-python3.12 -m venv venv
-source venv/bin/activate
+python3.12 -m venv .venv
+source .venv/bin/activate
 pip install -r requirements-server.txt
 ```
 
@@ -36,7 +36,7 @@ YANDEX_DISK_FILE_PATH_WEB=/Заявки/website_applications.xlsx
 
 ```bash
 cd /root/PErr4.4.---
-source venv/bin/activate
+source .venv/bin/activate
 python bot/bot.py          # Ctrl+C после проверки
 cd web && gunicorn -w 1 -b 127.0.0.1:5000 "app:app"   # Ctrl+C
 ```
@@ -90,10 +90,8 @@ ufw enable
 
 ## Ошибка `perr-web` / `perr-bot`: status=203/EXEC
 
-Обычно **нет файла** по пути `.../venv/bin/gunicorn` или `.../venv/bin/python`: на сервере окружение создано как **`.venv`**, а в unit-файлах указано **`venv`**.
+Обычно **нет исполняемого файла** по пути в `ExecStart` (не то имя каталога venv или не установлены пакеты).
 
-Варианты:
-
-- Заменить в `/etc/systemd/system/perr-*.service` все вхождения `/venv/` на `/.venv/`, затем `systemctl daemon-reload` и `restart`.
-- Или из корня проекта: `ln -sfn .venv venv` (если каталога `venv` ещё нет).
-- Убедиться, что установлено: `pip install gunicorn` и `pip install -r requirements-server.txt` в этом venv.
+- Убедитесь, что окружение создано как **`/root/PErr4.4.---/.venv`** (как в разделе 1) и в нём: `pip install -r requirements-server.txt`.
+- Если окружение у вас называется **`venv`**, а не **`.venv`**, отредактируйте `/etc/systemd/system/perr-*.service`: замените `/.venv/` на `/venv/`, затем `systemctl daemon-reload` и `restart`.
+- Либо: `cd /root/PErr4.4.--- && ln -sfn venv .venv` (если есть только `venv`).

@@ -19,6 +19,7 @@ pip install -r requirements-server.txt
 ## Деплой на VPS
 
 - [DEPLOY.md](DEPLOY.md) — systemd, nginx, `requirements-server.txt`
+- В unit-файлах указано виртуальное окружение **`.venv`** в каталоге проекта (на сервере: `python3.12 -m venv .venv`).
 
 ## Репозиторий
 
