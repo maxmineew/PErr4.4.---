@@ -1,6 +1,8 @@
 venv/
 .env
+credentials.json
 *.pyc
 __pycache__/
 *.log
 .DS_Store
+.idea/
