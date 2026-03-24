@@ -23,11 +23,13 @@ cd web
 
 Создайте `.env` в папке `web/` или в корне проекта:
 
-```
-FLASK_SECRET_KEY=ваш-секрет
-YANDEX_API_KEY=...
-YANDEX_FOLDER_ID=...
-YANDEX_DISK_TOKEN=...
+```env
+# Не публикуйте реальные значения — только в локальный .env (вне Git).
+
+FLASK_SECRET_KEY=<случайная_строка>
+YANDEX_API_KEY=<API-ключ>
+YANDEX_FOLDER_ID=<ID_каталога>
+YANDEX_DISK_TOKEN=<OAuth_токен>
 YANDEX_DISK_FILE_PATH_WEB=/Заявки/website_applications.xlsx
 ```
 

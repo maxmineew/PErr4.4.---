@@ -17,7 +17,7 @@ pip install -r requirements-server.txt
 
 ## 2. Переменные окружения
 
-Создайте `bot/.env` (не коммитится в Git):
+Создайте `bot/.env` (файл в `.gitignore`; реальные ключи не вносите в репозиторий и не копируйте в тикеты/чаты):
 
 ```env
 TELEGRAM_BOT_TOKEN=...
@@ -67,7 +67,7 @@ rm -f /etc/nginx/sites-enabled/default
 nginx -t && systemctl reload nginx
 ```
 
-Сайт: `http://62.113.102.61/` (или ваш домен, если пропишете `server_name`).
+Сайт: `http://ВАШ_IP/` или `http://ваш.домен` (после настройки `server_name` в nginx).
 
 SSL (Let's Encrypt), если есть домен:
 

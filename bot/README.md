@@ -57,15 +57,17 @@ trusted-host = pypi.tuna.tsinghua.edu.cn
 Создайте файл `.env` в корне проекта (рядом с папкой `bot/`):
 
 ```env
-# Telegram — получите у @BotFather
-TELEGRAM_BOT_TOKEN=1234567890:ABCdefGHIjklMNOpqrsTUVwxyz
+# Значения не копируйте в инструкции и чаты — только в локальный файл .env (он в .gitignore).
+
+# Telegram — токен только у @BotFather
+TELEGRAM_BOT_TOKEN=<токен>
 
 # YandexGPT — Yandex Cloud
-YANDEX_API_KEY=ваш_api_ключ
-YANDEX_FOLDER_ID=идентификатор_каталога
+YANDEX_API_KEY=<API-ключ>
+YANDEX_FOLDER_ID=<ID_каталога>
 
-# Яндекс Диск
-YANDEX_DISK_TOKEN=OAuth_токен_для_диска
+# Яндекс Диск — OAuth, не путать с API-ключом Облака
+YANDEX_DISK_TOKEN=<OAuth_токен>
 YANDEX_DISK_FILE_PATH=/Заявки/applications.xlsx
 ```
 
