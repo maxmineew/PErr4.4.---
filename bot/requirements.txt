@@ -1,0 +1,12 @@
+# Telegram
+pyTelegramBotAPI>=4.14.0
+
+# YandexGPT (HTTP-запросы)
+requests>=2.31.0
+
+# Яндекс Диск + Excel (хранилище заявок)
+yadisk>=3.4.0
+openpyxl>=3.1.0
+
+# Конфигурация
+python-dotenv>=1.0.0

@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Заявка с сайта</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      min-height: 100vh;
+      background: #0d0d0d;
+      color: #e0e0e0;
+      padding: 2rem;
+    }
+    .landing {
+      max-width: 600px;
+      margin: 0 auto;
+      padding: 4rem 0;
+    }
+    .landing h1 { font-size: 2rem; margin-bottom: 1rem; font-weight: 500; }
+    .landing p { color: #9a9a9a; line-height: 1.6; margin-bottom: 1rem; }
+
+    /* Чат-виджет справа внизу */
+    .chat-toggle {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      width: 56px;
+      height: 56px;
+      border-radius: 50%;
+      background: #1a1a1a;
+      border: 1px solid #333;
+      color: #fff;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 24px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+      z-index: 999;
+      transition: background 0.2s;
+    }
+    .chat-toggle:hover { background: #252525; }
+
+    .chat-widget {
+      display: none;
+      position: fixed;
+      bottom: 90px;
+      right: 24px;
+      width: 380px;
+      max-width: calc(100vw - 48px);
+      height: 500px;
+      background: #161616;
+      border: 1px solid #2a2a2a;
+      border-radius: 12px;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.5);
+      flex-direction: column;
+      z-index: 998;
+      overflow: hidden;
+    }
+    .chat-widget.open { display: flex; }
+
+    .chat-header {
+      padding: 16px;
+      border-bottom: 1px solid #2a2a2a;
+      font-weight: 500;
+      font-size: 15px;
+    }
+
+    .chat-messages {
+      flex: 1;
+      overflow-y: auto;
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .chat-messages::-webkit-scrollbar { width: 6px; }
+    .chat-messages::-webkit-scrollbar-track { background: #1a1a1a; }
+    .chat-messages::-webkit-scrollbar-thumb { background: #404040; border-radius: 3px; }
+
+    .msg {
+      max-width: 85%;
+      padding: 10px 14px;
+      border-radius: 12px;
+      font-size: 14px;
+      line-height: 1.4;
+      word-wrap: break-word;
+    }
+    .msg.user {
+      align-self: flex-end;
+      background: #2a2a2a;
+      color: #e0e0e0;
+    }
+    .msg.assistant {
+      align-self: flex-start;
+      background: #252525;
+      color: #c0c0c0;
+      border: 1px solid #333;
+    }
+
+    .typing {
+      align-self: flex-start;
+      padding: 10px 14px;
+      background: #252525;
+      border-radius: 12px;
+      border: 1px solid #333;
+      color: #888;
+      font-size: 13px;
+    }
+    .typing span { animation: dot 1.4s infinite; }
+    .typing span:nth-child(2) { animation-delay: 0.2s; }
+    .typing span:nth-child(3) { animation-delay: 0.4s; }
+    @keyframes dot { 0%, 80%, 100% { opacity: 0.3; } 40% { opacity: 1; } }
+
+    .chat-input-wrap {
+      padding: 12px;
+      border-top: 1px solid #2a2a2a;
+    }
+    .chat-input-wrap form {
+      display: flex;
+      gap: 8px;
+    }
+    .chat-input {
+      flex: 1;
+      padding: 10px 14px;
+      background: #1a1a1a;
+      border: 1px solid #333;
+      border-radius: 8px;
+      color: #e0e0e0;
+      font-size: 14px;
+      outline: none;
+    }
+    .chat-input::placeholder { color: #666; }
+    .chat-input:focus { border-color: #555; }
+    .chat-send {
+      padding: 10px 18px;
+      background: #2a2a2a;
+      border: 1px solid #404040;
+      border-radius: 8px;
+      color: #e0e0e0;
+      cursor: pointer;
+      font-size: 14px;
+      transition: background 0.2s;
+    }
+    .chat-send:hover { background: #333; }
+    .chat-send:disabled { opacity: 0.5; cursor: not-allowed; }
+  </style>
+</head>
+<body>
+  <main class="landing">
+    <h1>Добро пожаловать</h1>
+    <p>Оставьте заявку — наш ассистент ответит на ваши вопросы и примет обращение.</p>
+    <p>Чат-виджет доступен в правом нижнем углу.</p>
+  </main>
+
+  <button class="chat-toggle" id="chatToggle" type="button" aria-label="Открыть чат">💬</button>
+  <div class="chat-widget" id="chatWidget">
+    <div class="chat-header">Ассистент</div>
+    <div class="chat-messages" id="chatMessages"></div>
+    <div class="chat-input-wrap">
+      <form id="chatForm">
+        <input class="chat-input" id="chatInput" type="text" placeholder="Введите сообщение..." autocomplete="off">
+        <button class="chat-send" type="submit">Отправить</button>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    const toggle = document.getElementById('chatToggle');
+    const widget = document.getElementById('chatWidget');
+    const messages = document.getElementById('chatMessages');
+    const form = document.getElementById('chatForm');
+    const input = document.getElementById('chatInput');
+
+    let opened = false;
+    toggle.addEventListener('click', () => {
+      widget.classList.toggle('open');
+      if (!opened && widget.classList.contains('open')) {
+        opened = true;
+        addMsg('Здравствуйте! Оставьте заявку. Как вас зовут?', 'assistant');
+      }
+    });
+
+    function addMsg(text, role) {
+      const div = document.createElement('div');
+      div.className = 'msg ' + role;
+      div.textContent = text;
+      messages.appendChild(div);
+      messages.scrollTop = messages.scrollHeight;
+    }
+
+    function addTyping() {
+      const div = document.createElement('div');
+      div.className = 'typing';
+      div.id = 'typingIndicator';
+      div.innerHTML = 'Ассистент печатает<span>.</span><span>.</span><span>.</span>';
+      messages.appendChild(div);
+      messages.scrollTop = messages.scrollHeight;
+    }
+
+    function removeTyping() {
+      const el = document.getElementById('typingIndicator');
+      if (el) el.remove();
+    }
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const text = input.value.trim();
+      if (!text) return;
+
+      addMsg(text, 'user');
+      input.value = '';
+      addTyping();
+
+      try {
+        const res = await fetch('/api/chat', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ message: text }),
+          credentials: 'include'
+        });
+        const data = await res.json();
+        removeTyping();
+        addMsg(data.reply, 'assistant');
+        if (data.done) input.disabled = true;
+      } catch (err) {
+        removeTyping();
+        addMsg('Ошибка соединения. Попробуйте снова.', 'assistant');
+      }
+
+      messages.scrollTop = messages.scrollHeight;
+    });
+  </script>
+</body>
+</html>
