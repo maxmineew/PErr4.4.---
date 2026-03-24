@@ -87,3 +87,13 @@ ufw enable
 ---
 
 Если путь к проекту не `/root/PErr4.4.---`, отредактируйте `WorkingDirectory`, `ExecStart` и `EnvironmentFile` в `deploy/perr-bot.service` и `deploy/perr-web.service` перед копированием в `/etc/systemd/system/`.
+
+## Ошибка `perr-web` / `perr-bot`: status=203/EXEC
+
+Обычно **нет файла** по пути `.../venv/bin/gunicorn` или `.../venv/bin/python`: на сервере окружение создано как **`.venv`**, а в unit-файлах указано **`venv`**.
+
+Варианты:
+
+- Заменить в `/etc/systemd/system/perr-*.service` все вхождения `/venv/` на `/.venv/`, затем `systemctl daemon-reload` и `restart`.
+- Или из корня проекта: `ln -sfn .venv venv` (если каталога `venv` ещё нет).
+- Убедиться, что установлено: `pip install gunicorn` и `pip install -r requirements-server.txt` в этом venv.
