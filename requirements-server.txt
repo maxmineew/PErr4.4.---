@@ -1,0 +1,8 @@
+# Telegram-бот + веб (Flask) на одном VPS
+pyTelegramBotAPI>=4.14.0
+flask>=3.0.0
+gunicorn>=22.0.0
+requests>=2.31.0
+yadisk>=3.4.0
+openpyxl>=3.1.0
+python-dotenv>=1.0.0
